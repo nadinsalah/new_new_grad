@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — ExamPortal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080a0e;
+    --surface: #0f1117;
+    --surface2: #161a24;
+    --border: #1e2333;
+    --accent: #c9a84c;
+    --accent2: #e8c97a;
+    --text: #e8eaf0;
+    --muted: #5a6275;
+    --success: #34d399;
+    --error: #f87171;
+    --warn: #fbbf24;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* LOGIN SCREEN */
+  #loginScreen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image:
+      radial-gradient(ellipse at 30% 30%, rgba(201,168,76,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 70%, rgba(201,168,76,0.04) 0%, transparent 50%);
+  }
+
+  .login-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px 44px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .login-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--accent), #7a5a20);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin: 0 auto 20px;
+  }
+
+  .login-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    margin-bottom: 6px;
+  }
+
+  .login-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 32px; }
+
+  .login-field { margin-bottom: 16px; text-align: left; }
+
+  label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  input, textarea, select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    padding: 11px 15px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+  }
+
+  .btn {
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #08090e;
+    width: 100%;
+    padding: 13px;
+    font-size: 0.95rem;
+  }
+
+  .btn-primary:hover { background: var(--accent2); }
+
+  .btn-danger {
+    background: rgba(248,113,113,0.15);
+    color: var(--error);
+    border: 1px solid rgba(248,113,113,0.3);
+  }
+
+  .btn-danger:hover { background: rgba(248,113,113,0.25); }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-sm { padding: 7px 14px; font-size: 0.82rem; }
+
+  .login-error {
+    color: var(--error);
+    font-size: 0.82rem;
+    margin-top: 10px;
+    display: none;
+  }
+
+  /* ADMIN PANEL */
+  #adminPanel { display: none; }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--accent);
+  }
+
+  .logo span { color: var(--text); }
+  .logo small { font-size: 0.65rem; font-family: 'DM Sans', sans-serif; color: var(--muted); display: block; letter-spacing: 0.1em; text-transform: uppercase; margin-top: -2px; }
+
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .admin-tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25); padding: 5px 12px; border-radius: 20px; }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 65px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+  }
+
+  .nav-section {
+    padding: 0 16px;
+    margin-bottom: 24px;
+  }
+
+  .nav-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 8px;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--muted);
+    transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+
+  .nav-item.active {
+    background: rgba(201,168,76,0.1);
+    color: var(--accent);
+  }
+
+  .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+  /* MAIN CONTENT */
+  .content {
+    padding: 36px 40px;
+    overflow-y: auto;
+  }
+
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    margin-bottom: 4px;
+  }
+
+  .section-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 32px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-body { padding: 20px; }
+
+  .field-row { margin-bottom: 18px; }
+
+  .field-row:last-child { margin-bottom: 0; }
+
+  .field-hint {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+  }
+
+  .dot-green { background: var(--success); box-shadow: 0 0 6px var(--success); }
+  .dot-red { background: var(--error); }
+
+  .alert {
+    padding: 11px 15px;
+    border-radius: 8px;
+    font-size: 0.84rem;
+    margin-bottom: 14px;
+    display: none;
+  }
+
+  .alert.show { display: flex; align-items: center; gap: 8px; }
+  .alert-success { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: var(--success); }
+  .alert-error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: var(--error); }
+  .alert-warn { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); color: var(--warn); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  /* Password change */
+  .password-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* Group table */
+  .table-wrap { overflow-x: auto; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+
+  thead th {
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.1s; }
+  tbody tr:hover { background: var(--surface2); }
+  tbody td { padding: 10px 14px; color: var(--text); }
+  tbody td.id-col { font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--muted); }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .tag-day { background: rgba(201,168,76,0.1); color: var(--accent); }
+  .tag-room { background: rgba(52,211,153,0.1); color: var(--success); }
+
+  /* Stats */
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+
+  .stat-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+
+  .stat-val { font-size: 2rem; font-weight: 700; color: var(--accent); font-family: 'Playfair Display', serif; }
+  .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 4px; letter-spacing: 0.05em; }
+
+  /* Upload zone */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .upload-zone:hover { border-color: var(--accent); background: rgba(201,168,76,0.03); }
+  .upload-zone input { display: none; }
+  .upload-icon { font-size: 2rem; margin-bottom: 10px; }
+  .upload-text { font-size: 0.88rem; color: var(--muted); }
+  .upload-text strong { color: var(--accent); }
+
+  .spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(0,0,0,0.2);
+    border-top-color: #08090e;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .content { padding: 24px 16px; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .password-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-icon">🔐</div>
+    <h1 class="login-title">Admin Panel</h1>
+    <p class="login-sub">ExamPortal — Restricted Access</p>
+
+    <div class="login-field">
+      <label for="loginPass">Admin Password</label>
+      <input type="password" id="loginPass" placeholder="Enter password" autocomplete="current-password">
+    </div>
+
+    <button class="btn btn-primary" onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="loginError">Incorrect password. Try again.</div>
+    <p style="margin-top:20px;font-size:0.75rem;color:var(--muted);">Default password: <code style="color:var(--accent)">admin1234</code><br>Change it immediately after first login.</p>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel">
+  <header>
+    <div class="logo">
+      Exam<span>Portal</span>
+      <small>Admin Console</small>
+    </div>
+    <div class="header-right">
+      <span class="admin-tag">Admin</span>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="nav-section">
+        <span class="nav-label">Management</span>
+        <div class="nav-item active" onclick="showTab('dashboard', this)">
+          <span class="nav-icon">📊</span> Dashboard
+        </div>
+        <div class="nav-item" onclick="showTab('sheet', this)">
+          <span class="nav-icon">🔗</span> Google Sheet
+        </div>
+        <div class="nav-item" onclick="showTab('students', this)">
+          <span class="nav-icon">👥</span> Student Data
+        </div>
+        <div class="nav-item" onclick="showTab('upload', this)">
+          <span class="nav-icon">📤</span> Upload New Excel
+        </div>
+      </div>
+      <div class="nav-section">
+        <span class="nav-label">Security</span>
+        <div class="nav-item" onclick="showTab('password', this)">
+          <span class="nav-icon">🔑</span> Change Password
+        </div>
+      </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="tab-pane active" id="tab-dashboard">
+        <h1 class="section-title">Dashboard</h1>
+        <p class="section-sub">Overview of your exam portal configuration.</p>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-val" id="statGroups">0</div>
+            <div class="stat-label">Total Groups</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="statStudents">0</div>
+            <div class="stat-label">Total Students</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="statDays">0</div>
+            <div class="stat-label">Exam Days</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">⚡ System Status</span>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-size:0.88rem;">Google Sheet URL</span>
+                <span id="sheetStatus" style="font-size:0.82rem;"></span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-size:0.88rem;">Student Data</span>
+                <span style="font-size:0.82rem;color:var(--success);"><span class="status-dot dot-green"></span>Loaded</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-size:0.88rem;">Admin Password</span>
+                <span id="passStatus" style="font-size:0.82rem;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📋 Quick Links</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:0.88rem;color:var(--muted);margin-bottom:14px;">Share the examiner form link with your team. The admin panel should remain private.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn btn-ghost btn-sm" onclick="window.open('examiner_form.html','_blank')">🔗 Open Examiner Form</button>
+              <button class="btn btn-ghost btn-sm" id="sheetLinkBtn" onclick="openSheet()">📊 Open Google Sheet</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GOOGLE SHEET -->
+      <div class="tab-pane" id="tab-sheet">
+        <h1 class="section-title">Google Sheet</h1>
+        <p class="section-sub">Configure where grade submissions are saved.</p>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🔗 Google Apps Script URL</span>
+          </div>
+          <div class="card-body">
+            <div id="sheetAlert" class="alert"></div>
+
+            <div class="field-row">
+              <label>Deployment URL (from Google Apps Script)</label>
+              <input type="url" id="sheetUrlInput" placeholder="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec">
+              <p class="field-hint">
+                This is the Web App URL from your Google Apps Script deployment.<br>
+                See the <strong>Setup Guide</strong> below for step-by-step instructions.
+              </p>
+            </div>
+
+            <div style="display:flex;gap:10px;">
+              <button class="btn btn-primary" style="width:auto;padding:10px 24px;" onclick="saveSheetUrl()">Save URL</button>
+              <button class="btn btn-danger btn-sm" onclick="clearSheetUrl()">Clear</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📖 Google Apps Script Setup Guide</span>
+          </div>
+          <div class="card-body" style="font-size:0.88rem;line-height:1.8;color:var(--muted);">
+            <p style="color:var(--text);font-weight:600;margin-bottom:12px;">Follow these steps once to connect to Google Sheets:</p>
+            <ol style="padding-left:20px;display:flex;flex-direction:column;gap:10px;">
+              <li>Go to <strong style="color:var(--accent)">sheets.google.com</strong> → create a new spreadsheet</li>
+              <li>Name the columns in Row 1:<br>
+                <code style="background:var(--surface2);padding:4px 8px;border-radius:4px;font-size:0.8rem;display:block;margin-top:6px;color:var(--accent2);">Timestamp | Group | Day | Room | S1 Name | S1 ID | E1-S1 Report | E1-S1 Pres | E2-S1 Report | E2-S1 Pres | E3-S1 Report | E3-S1 Pres | S2 Name | S2 ID | E1-S2 Report | E1-S2 Pres | E2-S2 Report | E2-S2 Pres | E3-S2 Report | E3-S2 Pres | S1 Total | S2 Total | Group Avg</code>
+              </li>
+              <li>Click <strong>Extensions → Apps Script</strong></li>
+              <li>Paste the script code (click copy below) and save</li>
+              <li>Click <strong>Deploy → New Deployment → Web App</strong></li>
+              <li>Set <strong>"Execute as: Me"</strong> and <strong>"Who has access: Anyone"</strong></li>
+              <li>Click Deploy → copy the URL → paste it above</li>
+              <li>Set sheet sharing to <strong>View Only</strong> for your team, and keep edit access only for yourself</li>
+            </ol>
+
+            <hr class="divider">
+
+            <p style="color:var(--text);font-weight:600;margin-bottom:10px;">Apps Script Code — copy & paste into your script editor:</p>
+            <div style="position:relative;">
+              <pre id="scriptCode" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;font-size:0.78rem;overflow-x:auto;color:#a8c4f0;line-height:1.6;">function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var d = e.parameter;
+  
+  sheet.appendRow([
+    d.timestamp,
+    d.groupNumber,
+    d.day,
+    d.room,
+    d.s1Name,
+    d.s1Id,
+    d.e1s1Report,
+    d.e1s1Presentation,
+    d.e2s1Report,
+    d.e2s1Presentation,
+    d.e3s1Report,
+    d.e3s1Presentation,
+    d.s2Name,
+    d.s2Id,
+    d.e1s2Report,
+    d.e1s2Presentation,
+    d.e2s2Report,
+    d.e2s2Presentation,
+    d.e3s2Report,
+    d.e3s2Presentation,
+    d.s1Total,
+    d.s2Total,
+    d.groupAvg
+  ]);
+  
+  return ContentService
+    .createTextOutput(JSON.stringify({status: 'success'}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doGet(e) {
+  return ContentService
+    .createTextOutput(JSON.stringify({status: 'ok'}))
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre>
+              <button class="btn btn-ghost btn-sm" style="position:absolute;top:10px;right:10px;" onclick="copyScript()">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STUDENTS -->
+      <div class="tab-pane" id="tab-students">
+        <h1 class="section-title">Student Data</h1>
+        <p class="section-sub">All groups and students currently loaded in the system.</p>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">👥 All Groups</span>
+            <span style="font-size:0.78rem;color:var(--muted)" id="groupCount"></span>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Group</th>
+                    <th>Student 1</th>
+                    <th>S1 ID</th>
+                    <th>Student 2</th>
+                    <th>S2 ID</th>
+                    <th>Day</th>
+                    <th>Room</th>
+                  </tr>
+                </thead>
+                <tbody id="groupTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPLOAD -->
+      <div class="tab-pane" id="tab-upload">
+        <h1 class="section-title">Upload New Excel</h1>
+        <p class="section-sub">Replace the student data with a new Excel file. This updates what examiners see when they look up a group number.</p>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📤 Upload Excel File</span>
+          </div>
+          <div class="card-body">
+            <div id="uploadAlert" class="alert"></div>
+
+            <div class="field-row">
+              <label>Excel Password (if file is password-protected)</label>
+              <input type="password" id="uploadPassword" placeholder="Leave blank if no password">
+              <p class="field-hint">Note: Browser-based Excel reading has limited support for password-protected files. For best results, remove the password before uploading, or use an unprotected copy.</p>
+            </div>
+
+            <label class="upload-zone" for="excelFile">
+              <input type="file" id="excelFile" accept=".xlsx,.xls" onchange="handleFileUpload(this)">
+              <div class="upload-icon">📂</div>
+              <div class="upload-text">
+                <strong>Click to choose Excel file</strong><br>
+                .xlsx or .xls format — same structure as the original sign_in.xlsx
+              </div>
+            </label>
+
+            <hr class="divider">
+
+            <p style="font-size:0.82rem;color:var(--muted);">⚠ Expected columns: <code style="color:var(--accent2);">Group Number, Day, Room, Student 1 Name, Student 1 ID, Student 2 Name, Student 2 ID</code></p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">⚠ Danger Zone</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:0.88rem;color:var(--muted);margin-bottom:14px;">Reset all student data back to the original embedded dataset.</p>
+            <button class="btn btn-danger btn-sm" onclick="resetToOriginal()">Reset to Original Data</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="tab-pane" id="tab-password">
+        <h1 class="section-title">Change Password</h1>
+        <p class="section-sub">Update the admin panel password. This is stored locally in your browser.</p>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🔑 Password Settings</span>
+          </div>
+          <div class="card-body">
+            <div id="passAlert" class="alert"></div>
+
+            <div class="password-grid">
+              <div class="field-row">
+                <label>Current Password</label>
+                <input type="password" id="currentPass" placeholder="Current password">
+              </div>
+              <div></div>
+              <div class="field-row">
+                <label>New Password</label>
+                <input type="password" id="newPass" placeholder="New password (min. 6 chars)">
+              </div>
+              <div class="field-row">
+                <label>Confirm New Password</label>
+                <input type="password" id="confirmPass" placeholder="Repeat new password">
+              </div>
+            </div>
+
+            <button class="btn btn-primary" style="width:auto;padding:10px 28px;" onclick="changePassword()">Update Password</button>
+          </div>
+        </div>
+
+        <div class="card" style="border-color:rgba(248,113,113,0.2);">
+          <div class="card-header" style="background:rgba(248,113,113,0.05);">
+            <span class="card-title" style="color:var(--error);">🗑 Clear All Admin Settings</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:0.88rem;color:var(--muted);margin-bottom:14px;">Clears password, sheet URL, and all saved settings from this browser. You'll revert to the default password <code style="color:var(--accent);">admin1234</code>.</p>
+            <button class="btn btn-danger btn-sm" onclick="clearAllSettings()">Clear All Settings</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /layout -->
+</div><!-- /adminPanel -->
+
+<script>
+// ==========================================
+// EMBEDDED STUDENT DATA (same as examiner form)
+// ==========================================
+const ORIGINAL_DATA = {"31": {"s1_name": "Mostafa Tarek Ahmed", "s1_id": "222369", "s2_name": "Kirolos Ossama Maher", "s2_id": "222865", "day": "1", "room": "3"}, "8": {"s1_name": "Ahmed wasfy", "s1_id": "210243", "s2_name": "Ahmed Metwally", "s2_id": "205325", "day": "3", "room": "3"}, "24": {"s1_name": "Mohamed Osama Abdulhalem", "s1_id": "223813", "s2_name": "Saif Mohamed Aboelezz", "s2_id": "221925", "day": "1", "room": "3"}, "35": {"s1_name": "Abdelrahman Mohamed Sayed", "s1_id": "222225", "s2_name": "Hamza Amgad Elsayed", "s2_id": "221469", "day": "1", "room": "1"}, "5": {"s1_name": "Hebat- Allah Emad", "s1_id": "202205", "s2_name": "Ahmed Shokry", "s2_id": "204237", "day": "3", "room": "3"}, "G14": {"s1_name": "Yousef Taha Elkady", "s1_id": "211797", "s2_name": "Anas Ali Sayed", "s2_id": "222755", "day": "1", "room": "1"}, "19": {"s1_name": "Abdelrahman Hazem Mahmoud", "s1_id": "220217", "s2_name": "Seifallah Alaa Abdelaziz", "s2_id": "221433", "day": "1", "room": "3"}, "G28": {"s1_name": "Ziad Mohammed Moustafa", "s1_id": "221599", "s2_name": "Assem Refaat Ahmed", "s2_id": "221709", "day": "1", "room": "1"}, "10": {"s1_name": "Abdullah Riad", "s1_id": "221431", "s2_name": "Omar Ramadan", "s2_id": "221379", "day": "2", "room": "3"}, "1": {"s1_name": "Abdelrahman Mostafa Mohamed Khalaf", "s1_id": "223503", "s2_name": "Mohamed zeinelabden Fouad Faisal", "s2_id": "223231", "day": "2", "room": "4"}, "22": {"s1_name": "Marwan Mohamed", "s1_id": "220381", "s2_name": "Youssef Khaled", "s2_id": "224957", "day": "2", "room": "3"}, "GROUP 41": {"s1_name": "Mahmoud Kossay", "s1_id": "236869", "s2_name": "Ahmed Ashraf", "s2_id": "175297", "day": "2", "room": "4"}, "Group 7": {"s1_name": "Yousef yahia", "s1_id": "220569", "s2_name": "Yahia Alaaeldin", "s2_id": "220181", "day": "2", "room": "4"}, "30": {"s1_name": "Hesham Abdelfattah", "s1_id": "221827", "s2_name": "Marwan Amr", "s2_id": "224293", "day": "2", "room": "3"}, "33": {"s1_name": "Eslam mohamed helal", "s1_id": "221195", "s2_name": "Ahmed hassanin", "s2_id": "212477", "day": "2", "room": "5"}, "G21": {"s1_name": "Ahmed mohamed khalaf hussain", "s1_id": "220209", "s2_name": "abdelrahman raafat taha", "s2_id": "225177", "day": "1", "room": "4"}, "32": {"s1_name": "Ahmed Ibrahim", "s1_id": "222647", "s2_name": "Karim Taher", "s2_id": "220829", "day": "2", "room": "3"}, "9": {"s1_name": "Osama Elaagib Ahmed", "s1_id": "214035", "s2_name": "Mohamed sayed mohamed", "s2_id": "210767", "day": "3", "room": "4"}, "2": {"s1_name": "ahmed hany ismail", "s1_id": "221411", "s2_name": "retag tarek nassouh", "s2_id": "222359", "day": "1", "room": "4"}, "20": {"s1_name": "Omnya khaled el sayed gomaa", "s1_id": "222953", "s2_name": "Malak hatem ahmed hosny", "s2_id": "22391", "day": "2", "room": "5"}, "38": {"s1_name": "abdelrahman mohamed anter mohamed yousif", "s1_id": "224861", "s2_name": "mohamed sameh mohamed", "s2_id": "225091", "day": "1", "room": "4"}, "4": {"s1_name": "Merna magdy salama", "s1_id": "223899", "s2_name": "Shahd mohamed emam", "s2_id": "223291", "day": "2", "room": "5"}, "37": {"s1_name": "Mohamed Essam", "s1_id": "223257", "s2_name": "Mohamed Ali", "s2_id": "220115", "day": "2", "room": "2"}, "40": {"s1_name": "Ahmed Tamer", "s1_id": "221549", "s2_name": "Seif Ahmed", "s2_id": "223987", "day": "2", "room": "2"}, "15": {"s1_name": "Laila Mohamed", "s1_id": "222265", "s2_name": "Farah Amr", "s2_id": "224073", "day": "2", "room": "2"}, "26": {"s1_name": "Nada osama khalil", "s1_id": "220849", "s2_name": "Amira aly fathy", "s2_id": "224853", "day": "1", "room": "5"}, "17": {"s1_name": "Yousef magdy abdelaty", "s1_id": "220097", "s2_name": "Youssef Ahmed Mohamed", "s2_id": "222221", "day": "1", "room": "5"}, "42": {"s1_name": "Ahmad othman rajab zeina", "s1_id": "224033", "s2_name": "", "s2_id": "", "day": "2", "room": "5"}, "12": {"s1_name": "Rawan mahmoud awad", "s1_id": "203491", "s2_name": "", "s2_id": "", "day": "3", "room": "4"}, "39": {"s1_name": "Moaaz Mohamed helmi", "s1_id": "204025", "s2_name": "Shahd Ashour Mohamed", "s2_id": "221179", "day": "1", "room": "5"}, "3 gradII": {"s1_name": "Mohamed Essam", "s1_id": "194187", "s2_name": "Hussein Sami", "s2_id": "185363", "day": "3", "room": "2"}, "G2 gradII": {"s1_name": "Ahmed Shaaban", "s1_id": "213825", "s2_name": "Mohanad Gehad", "s2_id": "201865", "day": "3", "room": "2"}, "6": {"s1_name": "abdelrahman adel shafik", "s1_id": "2221459", "s2_name": "meran shoukry victor arsel", "s2_id": "223305", "day": "1", "room": "2"}, "13 gradII": {"s1_name": "Ziad Ashraf", "s1_id": "213895", "s2_name": "", "s2_id": "", "day": "3", "room": "2"}, "7": {"s1_name": "Nour Walid", "s1_id": "194009", "s2_name": "Ramy Hossam", "s2_id": "191413", "day": "3", "room": "3"}, "G10 grad II": {"s1_name": "Yahya Mostafa", "s1_id": "210781", "s2_name": "", "s2_id": "", "day": "3", "room": "2"}, "36": {"s1_name": "Nada Ahmed", "s1_id": "222539", "s2_name": "Adham sayed", "s2_id": "222201", "day": "3", "room": "1"}, "25": {"s1_name": "Amr Mohamed", "s1_id": "225189", "s2_name": "Seif Sameh", "s2_id": "225207", "day": "3", "room": "1"}, "3": {"s1_name": "Manar abdelkareem", "s1_id": "221221", "s2_name": "Lama Alaa", "s2_id": "225213", "day": "3", "room": "1"}, "13": {"s1_name": "Hossameldin mahmoud", "s1_id": "223043", "s2_name": "Ahmed karam", "s2_id": "225025", "day": "3", "room": "1"}, "18": {"s1_name": "usama mahamed ayed kotb", "s1_id": "180437", "s2_name": "mazen mohamed atia", "s2_id": "221503", "day": "1", "room": "2"}, "11": {"s1_name": "john gerom samir", "s1_id": "222121", "s2_name": "saher hossam mohamed", "s2_id": "220471", "day": "1", "room": "2"}, "29": {"s1_name": "jomana belal", "s1_id": "221003", "s2_name": "yousef yahia", "s2_id": "214139", "day": "1", "room": "2"}, "16": {"s1_name": "sohaila ahmed mohammed algohary", "s1_id": "220487", "s2_name": "maryam ahmed jalalaldein abdulhamid", "s2_id": "220279", "day": "2", "room": "1"}, "23": {"s1_name": "omar ashraf mahrous elmoghazy", "s1_id": "223065", "s2_name": "omar mostafa abdelrazek metwally elmorshdy", "s2_id": "222191", "day": "2", "room": "1"}, "34": {"s1_name": "salaheldin samir salah elsayed", "s1_id": "225041", "s2_name": "yousef sayed mohamed ali", "s2_id": "224973", "day": "2", "room": "1"}, "27": {"s1_name": "seifeldin tamer zaki", "s1_id": "224955", "s2_name": "eslam wael hussein", "s2_id": "223243", "day": "2", "room": "1"}};
+
+const DEFAULT_PASS = 'admin1234';
+const PASS_KEY = 'examportal_admin_pass';
+const SHEET_KEY = 'examportal_sheet_url';
+
+// ==========================================
+// AUTH
+// ==========================================
+function getPassword() {
+  return localStorage.getItem(PASS_KEY) || DEFAULT_PASS;
+}
+
+function doLogin() {
+  const entered = document.getElementById('loginPass').value;
+  if (entered === getPassword()) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    initAdmin();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+function logout() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('adminPanel').style.display = 'none';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginError').style.display = 'none';
+}
+
+document.getElementById('loginPass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+// ==========================================
+// TABS
+// ==========================================
+function showTab(id, el) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  el.classList.add('active');
+}
+
+// ==========================================
+// INIT
+// ==========================================
+function initAdmin() {
+  updateDashboard();
+  renderGroupTable();
+  document.getElementById('sheetUrlInput').value = localStorage.getItem(SHEET_KEY) || '';
+}
+
+function updateDashboard() {
+  const data = ORIGINAL_DATA;
+  const keys = Object.keys(data);
+  const students = keys.reduce((acc, k) => acc + 1 + (data[k].s2_name ? 1 : 0), 0);
+  const days = new Set(keys.map(k => data[k].day)).size;
+
+  document.getElementById('statGroups').textContent = keys.length;
+  document.getElementById('statStudents').textContent = students;
+  document.getElementById('statDays').textContent = days;
+
+  const sheetUrl = localStorage.getItem(SHEET_KEY);
+  document.getElementById('sheetStatus').innerHTML = sheetUrl
+    ? '<span class="status-dot dot-green"></span><span style="color:var(--success)">Configured</span>'
+    : '<span class="status-dot dot-red"></span><span style="color:var(--error)">Not set</span>';
+
+  const hasCustomPass = !!localStorage.getItem(PASS_KEY);
+  document.getElementById('passStatus').innerHTML = hasCustomPass
+    ? '<span class="status-dot dot-green"></span><span style="color:var(--success)">Custom password set</span>'
+    : '<span style="color:var(--warn)">⚠ Using default — please change!</span>';
+}
+
+function renderGroupTable() {
+  const data = ORIGINAL_DATA;
+  const keys = Object.keys(data);
+  document.getElementById('groupCount').textContent = keys.length + ' groups';
+  const tbody = document.getElementById('groupTableBody');
+  tbody.innerHTML = keys.map(k => {
+    const d = data[k];
+    return `<tr>
+      <td><strong>${k}</strong></td>
+      <td>${cap(d.s1_name)}</td>
+      <td class="id-col">${d.s1_id}</td>
+      <td>${d.s2_name ? cap(d.s2_name) : '<span style="color:var(--muted)">—</span>'}</td>
+      <td class="id-col">${d.s2_id || '—'}</td>
+      <td><span class="tag tag-day">Day ${d.day}</span></td>
+      <td><span class="tag tag-room">Rm ${d.room}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function cap(str) {
+  if (!str) return str;
+  return str.replace(/\w\S*/g, t => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase());
+}
+
+// ==========================================
+// SHEET URL
+// ==========================================
+function saveSheetUrl() {
+  const url = document.getElementById('sheetUrlInput').value.trim();
+  const alert = document.getElementById('sheetAlert');
+  if (!url) {
+    alert.className = 'alert alert-error show';
+    alert.textContent = 'Please enter a URL.';
+    return;
+  }
+  if (!url.startsWith('https://script.google.com')) {
+    alert.className = 'alert alert-warn show';
+    alert.textContent = '⚠ This doesn\'t look like a Google Apps Script URL. Make sure it starts with https://script.google.com/macros/s/';
+    return;
+  }
+  localStorage.setItem(SHEET_KEY, url);
+  alert.className = 'alert alert-success show';
+  alert.textContent = '✓ Google Sheet URL saved. Examiners can now submit grades.';
+  updateDashboard();
+}
+
+function clearSheetUrl() {
+  if (!confirm('Remove the Google Sheet URL?')) return;
+  localStorage.removeItem(SHEET_KEY);
+  document.getElementById('sheetUrlInput').value = '';
+  document.getElementById('sheetAlert').className = 'alert alert-warn show';
+  document.getElementById('sheetAlert').textContent = 'Sheet URL cleared. Submissions will be blocked until a new URL is set.';
+  updateDashboard();
+}
+
+function openSheet() {
+  const url = localStorage.getItem(SHEET_KEY);
+  if (url) window.open(url, '_blank');
+  else alert('No sheet URL configured yet.');
+}
+
+// ==========================================
+// PASSWORD
+// ==========================================
+function changePassword() {
+  const current = document.getElementById('currentPass').value;
+  const newp = document.getElementById('newPass').value;
+  const confirm = document.getElementById('confirmPass').value;
+  const alert = document.getElementById('passAlert');
+
+  if (current !== getPassword()) {
+    alert.className = 'alert alert-error show';
+    alert.textContent = 'Current password is incorrect.';
+    return;
+  }
+  if (newp.length < 6) {
+    alert.className = 'alert alert-error show';
+    alert.textContent = 'New password must be at least 6 characters.';
+    return;
+  }
+  if (newp !== confirm) {
+    alert.className = 'alert alert-error show';
+    alert.textContent = 'Passwords do not match.';
+    return;
+  }
+
+  localStorage.setItem(PASS_KEY, newp);
+  alert.className = 'alert alert-success show';
+  alert.textContent = '✓ Password updated successfully.';
+  document.getElementById('currentPass').value = '';
+  document.getElementById('newPass').value = '';
+  document.getElementById('confirmPass').value = '';
+  updateDashboard();
+}
+
+function clearAllSettings() {
+  if (!confirm('This will clear ALL settings (password, sheet URL). You will be logged out. Continue?')) return;
+  localStorage.removeItem(PASS_KEY);
+  localStorage.removeItem(SHEET_KEY);
+  logout();
+}
+
+// ==========================================
+// UPLOAD (basic — reads XLSX via FileReader)
+// ==========================================
+function handleFileUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const alert = document.getElementById('uploadAlert');
+  alert.className = 'alert alert-warn show';
+  alert.textContent = '⚠ File selected: ' + file.name + '. Note: to fully update student data in the examiner form, you need to re-generate the HTML files with the new Excel. Contact your developer or use the Python script provided separately.';
+}
+
+function resetToOriginal() {
+  if (!confirm('Reset student data to original? This cannot be undone.')) return;
+  const alert = document.getElementById('uploadAlert');
+  alert.className = 'alert alert-success show';
+  alert.textContent = '✓ Data is already using the original embedded dataset.';
+}
+
+// ==========================================
+// COPY SCRIPT
+// ==========================================
+function copyScript() {
+  const text = document.getElementById('scriptCode').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Apps Script code copied to clipboard!');
+  });
+}
+</script>
+</body>
+</html>

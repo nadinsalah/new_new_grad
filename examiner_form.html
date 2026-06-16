@@ -1073,13 +1073,13 @@ async function submitGrades() {
     e2s2Presentation: g('e2s2p'),
     e3s2Report: g('e3s2r'),
     e3s2Presentation: g('e3s2p'),
-    s1Total: document.getElementById('total_s1').textContent.replace('/ 30','').trim(),
-    s2Total: hasS2 ? document.getElementById('total_s2').textContent.replace('/ 30','').trim() : '',
+    s1Total: (parseFloat(document.getElementById('total_s1').textContent) || 0).toFixed(1),
+    s2Total: hasS2 ? (parseFloat(document.getElementById('total_s2').textContent) || 0).toFixed(1) : '',
     groupAvg: (() => {
       const s1 = parseFloat(document.getElementById('total_s1').textContent);
       const s2 = hasS2 ? parseFloat(document.getElementById('total_s2').textContent) : null;
       if (isNaN(s1)) return '';
-      if (!hasS2 || s2 === null || isNaN(s2)) return s1.toFixed(1);
+      if (!hasS2 || isNaN(s2)) return s1.toFixed(1);
       return ((s1 + s2) / 2).toFixed(1);
     })(),
   };

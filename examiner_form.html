@@ -1055,9 +1055,8 @@ async function submitGrades() {
     e2s2Presentation: g('e2s2p'),
     e3s2Report: g('e3s2r'),
     e3s2Presentation: g('e3s2p'),
-    s1Total: (() => { const ids=['e1s1r','e1s1p','e2s1r','e2s1p','e3s1r','e3s1p']; const v=ids.map(i=>parseFloat(document.getElementById(i).value)); return v.some(isNaN)?'':v.reduce((a,b)=>a+b,0).toFixed(1); })(),
-    s2Total: (() => { if(!hasS2) return ''; const ids=['e1s2r','e1s2p','e2s2r','e2s2p','e3s2r','e3s2p']; const v=ids.map(i=>parseFloat(document.getElementById(i).value)); return v.some(isNaN)?'':v.reduce((a,b)=>a+b,0).toFixed(1); })(),
-    groupAvg: (() => { const s1ids=['e1s1r','e1s1p','e2s1r','e2s1p','e3s1r','e3s1p'],s1v=s1ids.map(i=>parseFloat(document.getElementById(i).value)); if(s1v.some(isNaN)) return ''; const s1=s1v.reduce((a,b)=>a+b,0); if(!hasS2) return s1.toFixed(1); const s2ids=['e1s2r','e1s2p','e2s2r','e2s2p','e3s2r','e3s2p'],s2v=s2ids.map(i=>parseFloat(document.getElementById(i).value)); if(s2v.some(isNaN)) return s1.toFixed(1); return ((s1+s2v.reduce((a,b)=>a+b,0))/2).toFixed(1); })(),
+    s1Total: document.getElementById('total_s1').textContent.replace('/ 30','').trim(),
+    s2Total: hasS2 ? document.getElementById('total_s2').textContent.replace('/ 30','').trim() : '',
   };
 
   const btn = document.getElementById('submitBtn');
@@ -1065,20 +1064,22 @@ async function submitGrades() {
   btn.innerHTML = '<span class="spinner"></span>Submitting…';
   alertEl.className = 'alert';
 
-  function showSuccess() {
+  try {
+    const res = await fetch(sheetUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    // no-cors means we can't read response — assume success
     document.getElementById('step2').classList.remove('active');
     document.getElementById('step2').classList.add('done');
     document.getElementById('step3').classList.add('done');
+
     document.getElementById('mainForm').style.display = 'none';
     document.getElementById('successScreen').classList.add('show');
-  }
-  try {
-    const formData = new URLSearchParams();
-    Object.entries(payload).forEach(([k,v]) => formData.append(k, String(v)));
-    const timeout = setTimeout(showSuccess, 8000);
-    fetch(sheetUrl, { method: 'POST', mode: 'no-cors', body: formData.toString() })
-      .then(() => { clearTimeout(timeout); showSuccess(); })
-      .catch(() => { clearTimeout(timeout); showSuccess(); });
+
   } catch (err) {
     alertEl.className = 'alert alert-error show';
     alertEl.textContent = 'Submission failed: ' + err.message;

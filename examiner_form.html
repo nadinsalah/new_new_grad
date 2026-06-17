@@ -864,8 +864,8 @@ function getSheetUrl() {
 
 function lookupGroup() {
   const raw = document.getElementById('groupInput').value.trim();
-  const alert = document.getElementById('lookupAlert');
-  alert.classList.remove('show');
+  const lookupAlertEl = document.getElementById('lookupAlert');
+  lookupAlertEl.classList.remove('show');
 
   if (!raw) return;
 
@@ -882,7 +882,7 @@ function lookupGroup() {
   }
 
   if (!key) {
-    alert.classList.add('show');
+    lookupAlertEl.classList.add('show');
     return;
   }
 

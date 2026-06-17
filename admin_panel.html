@@ -543,6 +543,25 @@
 
         <div class="card">
           <div class="card-header">
+            <span class="card-title">&#x2601;&#xFE0F; GitHub Sync &mdash; Permanent URL (All Devices)</span>
+          </div>
+          <div class="card-body">
+            <p class="field-hint" style="margin-bottom:14px;">Set this once. The Sheet URL will be stored in your GitHub repo as <code>config.json</code> and loaded automatically on every device.</p>
+            <div class="field-row">
+              <label>GitHub Repo (username/reponame)</label>
+              <input type="text" id="ghRepoInput" placeholder="e.g. your-username/grade-submit">
+            </div>
+            <div class="field-row">
+              <label>GitHub Personal Access Token</label>
+              <input type="password" id="ghTokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+              <p class="field-hint">Needs <strong>Contents: Read &amp; Write</strong> permission. <a href="https://github.com/settings/tokens/new?scopes=repo&description=ExamPortal" target="_blank" style="color:var(--accent);">Generate token &rarr;</a></p>
+            </div>
+            <button class="btn btn-primary" style="width:auto;padding:10px 24px;" onclick="saveGitHubSettings()">Save &amp; Sync Now</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
             <span class="card-title">📖 Google Apps Script Setup Guide</span>
           </div>
           <div class="card-body" style="font-size:0.88rem;line-height:1.8;color:var(--muted);">
@@ -738,15 +757,22 @@ function doGet(e) {
 // ==========================================
 const ORIGINAL_DATA = {"31": {"s1_name": "Mostafa Tarek Ahmed", "s1_id": "222369", "s2_name": "Kirolos Ossama Maher", "s2_id": "222865", "day": "1", "room": "3"}, "8": {"s1_name": "Ahmed wasfy", "s1_id": "210243", "s2_name": "Ahmed Metwally", "s2_id": "205325", "day": "3", "room": "3"}, "24": {"s1_name": "Mohamed Osama Abdulhalem", "s1_id": "223813", "s2_name": "Saif Mohamed Aboelezz", "s2_id": "221925", "day": "1", "room": "3"}, "35": {"s1_name": "Abdelrahman Mohamed Sayed", "s1_id": "222225", "s2_name": "Hamza Amgad Elsayed", "s2_id": "221469", "day": "1", "room": "1"}, "5": {"s1_name": "Hebat- Allah Emad", "s1_id": "202205", "s2_name": "Ahmed Shokry", "s2_id": "204237", "day": "3", "room": "3"}, "G14": {"s1_name": "Yousef Taha Elkady", "s1_id": "211797", "s2_name": "Anas Ali Sayed", "s2_id": "222755", "day": "1", "room": "1"}, "19": {"s1_name": "Abdelrahman Hazem Mahmoud", "s1_id": "220217", "s2_name": "Seifallah Alaa Abdelaziz", "s2_id": "221433", "day": "1", "room": "3"}, "G28": {"s1_name": "Ziad Mohammed Moustafa", "s1_id": "221599", "s2_name": "Assem Refaat Ahmed", "s2_id": "221709", "day": "1", "room": "1"}, "10": {"s1_name": "Abdullah Riad", "s1_id": "221431", "s2_name": "Omar Ramadan", "s2_id": "221379", "day": "2", "room": "3"}, "1": {"s1_name": "Abdelrahman Mostafa Mohamed Khalaf", "s1_id": "223503", "s2_name": "Mohamed zeinelabden Fouad Faisal", "s2_id": "223231", "day": "2", "room": "4"}, "22": {"s1_name": "Marwan Mohamed", "s1_id": "220381", "s2_name": "Youssef Khaled", "s2_id": "224957", "day": "2", "room": "3"}, "GROUP 41": {"s1_name": "Mahmoud Kossay", "s1_id": "236869", "s2_name": "Ahmed Ashraf", "s2_id": "175297", "day": "2", "room": "4"}, "Group 7": {"s1_name": "Yousef yahia", "s1_id": "220569", "s2_name": "Yahia Alaaeldin", "s2_id": "220181", "day": "2", "room": "4"}, "30": {"s1_name": "Hesham Abdelfattah", "s1_id": "221827", "s2_name": "Marwan Amr", "s2_id": "224293", "day": "2", "room": "3"}, "33": {"s1_name": "Eslam mohamed helal", "s1_id": "221195", "s2_name": "Ahmed hassanin", "s2_id": "212477", "day": "2", "room": "5"}, "G21": {"s1_name": "Ahmed mohamed khalaf hussain", "s1_id": "220209", "s2_name": "abdelrahman raafat taha", "s2_id": "225177", "day": "1", "room": "4"}, "32": {"s1_name": "Ahmed Ibrahim", "s1_id": "222647", "s2_name": "Karim Taher", "s2_id": "220829", "day": "2", "room": "3"}, "9": {"s1_name": "Osama Elaagib Ahmed", "s1_id": "214035", "s2_name": "Mohamed sayed mohamed", "s2_id": "210767", "day": "3", "room": "4"}, "2": {"s1_name": "ahmed hany ismail", "s1_id": "221411", "s2_name": "retag tarek nassouh", "s2_id": "222359", "day": "1", "room": "4"}, "20": {"s1_name": "Omnya khaled el sayed gomaa", "s1_id": "222953", "s2_name": "Malak hatem ahmed hosny", "s2_id": "22391", "day": "2", "room": "5"}, "38": {"s1_name": "abdelrahman mohamed anter mohamed yousif", "s1_id": "224861", "s2_name": "mohamed sameh mohamed", "s2_id": "225091", "day": "1", "room": "4"}, "4": {"s1_name": "Merna magdy salama", "s1_id": "223899", "s2_name": "Shahd mohamed emam", "s2_id": "223291", "day": "2", "room": "5"}, "37": {"s1_name": "Mohamed Essam", "s1_id": "223257", "s2_name": "Mohamed Ali", "s2_id": "220115", "day": "2", "room": "2"}, "40": {"s1_name": "Ahmed Tamer", "s1_id": "221549", "s2_name": "Seif Ahmed", "s2_id": "223987", "day": "2", "room": "2"}, "15": {"s1_name": "Laila Mohamed", "s1_id": "222265", "s2_name": "Farah Amr", "s2_id": "224073", "day": "2", "room": "2"}, "26": {"s1_name": "Nada osama khalil", "s1_id": "220849", "s2_name": "Amira aly fathy", "s2_id": "224853", "day": "1", "room": "5"}, "17": {"s1_name": "Yousef magdy abdelaty", "s1_id": "220097", "s2_name": "Youssef Ahmed Mohamed", "s2_id": "222221", "day": "1", "room": "5"}, "42": {"s1_name": "Ahmad othman rajab zeina", "s1_id": "224033", "s2_name": "", "s2_id": "", "day": "2", "room": "5"}, "12": {"s1_name": "Rawan mahmoud awad", "s1_id": "203491", "s2_name": "", "s2_id": "", "day": "3", "room": "4"}, "39": {"s1_name": "Moaaz Mohamed helmi", "s1_id": "204025", "s2_name": "Shahd Ashour Mohamed", "s2_id": "221179", "day": "1", "room": "5"}, "3 gradII": {"s1_name": "Mohamed Essam", "s1_id": "194187", "s2_name": "Hussein Sami", "s2_id": "185363", "day": "3", "room": "2"}, "G2 gradII": {"s1_name": "Ahmed Shaaban", "s1_id": "213825", "s2_name": "Mohanad Gehad", "s2_id": "201865", "day": "3", "room": "2"}, "6": {"s1_name": "abdelrahman adel shafik", "s1_id": "2221459", "s2_name": "meran shoukry victor arsel", "s2_id": "223305", "day": "1", "room": "2"}, "13 gradII": {"s1_name": "Ziad Ashraf", "s1_id": "213895", "s2_name": "", "s2_id": "", "day": "3", "room": "2"}, "7": {"s1_name": "Nour Walid", "s1_id": "194009", "s2_name": "Ramy Hossam", "s2_id": "191413", "day": "3", "room": "3"}, "G10 grad II": {"s1_name": "Yahya Mostafa", "s1_id": "210781", "s2_name": "", "s2_id": "", "day": "3", "room": "2"}, "36": {"s1_name": "Nada Ahmed", "s1_id": "222539", "s2_name": "Adham sayed", "s2_id": "222201", "day": "3", "room": "1"}, "25": {"s1_name": "Amr Mohamed", "s1_id": "225189", "s2_name": "Seif Sameh", "s2_id": "225207", "day": "3", "room": "1"}, "3": {"s1_name": "Manar abdelkareem", "s1_id": "221221", "s2_name": "Lama Alaa", "s2_id": "225213", "day": "3", "room": "1"}, "13": {"s1_name": "Hossameldin mahmoud", "s1_id": "223043", "s2_name": "Ahmed karam", "s2_id": "225025", "day": "3", "room": "1"}, "18": {"s1_name": "usama mahamed ayed kotb", "s1_id": "180437", "s2_name": "mazen mohamed atia", "s2_id": "221503", "day": "1", "room": "2"}, "11": {"s1_name": "john gerom samir", "s1_id": "222121", "s2_name": "saher hossam mohamed", "s2_id": "220471", "day": "1", "room": "2"}, "29": {"s1_name": "jomana belal", "s1_id": "221003", "s2_name": "yousef yahia", "s2_id": "214139", "day": "1", "room": "2"}, "16": {"s1_name": "sohaila ahmed mohammed algohary", "s1_id": "220487", "s2_name": "maryam ahmed jalalaldein abdulhamid", "s2_id": "220279", "day": "2", "room": "1"}, "23": {"s1_name": "omar ashraf mahrous elmoghazy", "s1_id": "223065", "s2_name": "omar mostafa abdelrazek metwally elmorshdy", "s2_id": "222191", "day": "2", "room": "1"}, "34": {"s1_name": "salaheldin samir salah elsayed", "s1_id": "225041", "s2_name": "yousef sayed mohamed ali", "s2_id": "224973", "day": "2", "room": "1"}, "27": {"s1_name": "seifeldin tamer zaki", "s1_id": "224955", "s2_name": "eslam wael hussein", "s2_id": "223243", "day": "2", "room": "1"}};
 
-const DEFAULT_PASS = 'admin1234';
+const FIXED_PASSWORD = 'CHANGE_ME_PASSWORD';
+const FIXED_GOOGLE_SCRIPT_URL = 'CHANGE_ME_GOOGLE_SCRIPT_URL';
 const PASS_KEY = 'examportal_admin_pass';
 const SHEET_KEY = 'examportal_sheet_url';
+const DEFAULT_PASS = 'YOUR_PASSWORD_HERE';        // ← replace this
+const HARDCODED_SHEET_URL = 'YOUR_APPS_SCRIPT_URL_HERE';  // ← replace this
 
 // ==========================================
 // AUTH
 // ==========================================
 function getPassword() {
   return localStorage.getItem(PASS_KEY) || DEFAULT_PASS;
+}
+
+function getSheetUrl() {
+  return localStorage.getItem(SHEET_KEY) || HARDCODED_SHEET_URL;
 }
 
 function doLogin() {
@@ -787,7 +813,9 @@ function showTab(id, el) {
 function initAdmin() {
   updateDashboard();
   renderGroupTable();
-  document.getElementById('sheetUrlInput').value = localStorage.getItem(SHEET_KEY) || '';
+  document.getElementById('sheetUrlInput').value = getSheetUrl() || '';
+  document.getElementById('ghRepoInput').value = localStorage.getItem('examportal_gh_repo') || '';
+  // don't pre-fill token for security
 }
 
 function updateDashboard() {
@@ -800,7 +828,7 @@ function updateDashboard() {
   document.getElementById('statStudents').textContent = students;
   document.getElementById('statDays').textContent = days;
 
-  const sheetUrl = localStorage.getItem(SHEET_KEY);
+  const sheetUrl = getSheetUrl();
   document.getElementById('sheetStatus').innerHTML = sheetUrl
     ? '<span class="status-dot dot-green"></span><span style="color:var(--success)">Configured</span>'
     : '<span class="status-dot dot-red"></span><span style="color:var(--error)">Not set</span>';
@@ -836,25 +864,60 @@ function cap(str) {
 }
 
 // ==========================================
+// GITHUB CONFIG PERSISTENCE
+// ==========================================
+const GH_REPO_KEY = 'examportal_gh_repo';
+const GH_TOKEN_KEY = 'examportal_gh_token';
+
+async function pushConfigToGitHub(sheetUrl, alertEl) {
+  const repo = localStorage.getItem(GH_REPO_KEY);
+  const token = localStorage.getItem(GH_TOKEN_KEY);
+  if (!repo || !token) {
+    if (alertEl) { alertEl.className = 'alert alert-warn show'; alertEl.textContent = '✓ Saved locally only. Add GitHub repo & token below to sync across all devices.'; }
+    return;
+  }
+  try {
+    const apiUrl = 'https://api.github.com/repos/' + repo + '/contents/config.json';
+    let sha = '';
+    const get = await fetch(apiUrl, { headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github.v3+json' } });
+    if (get.ok) { const d = await get.json(); sha = d.sha; }
+    const encoded = btoa(JSON.stringify({ sheetUrl }));
+    const put = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'Update config', content: encoded, ...(sha ? { sha } : {}) })
+    });
+    if (put.ok) { if (alertEl) { alertEl.className = 'alert alert-success show'; alertEl.textContent = '✓ URL saved & synced to GitHub. All devices will load it automatically.'; } }
+    else { const err = await put.json(); if (alertEl) { alertEl.className = 'alert alert-warn show'; alertEl.textContent = '✓ Saved locally. GitHub sync failed: ' + (err.message||'check token & repo name'); } }
+  } catch(e) {
+    if (alertEl) { alertEl.className = 'alert alert-warn show'; alertEl.textContent = '✓ Saved locally. GitHub sync error: ' + e.message; }
+  }
+}
+
+function saveGitHubSettings() {
+  const repo = document.getElementById('ghRepoInput').value.trim();
+  const token = document.getElementById('ghTokenInput').value.trim();
+  const alertEl = document.getElementById('sheetAlert');
+  if (repo) localStorage.setItem(GH_REPO_KEY, repo);
+  if (token) localStorage.setItem(GH_TOKEN_KEY, token);
+  const url = getSheetUrl();
+  if (url) pushConfigToGitHub(url, alertEl);
+  else { alertEl.className = 'alert alert-success show'; alertEl.textContent = '✓ GitHub settings saved. Now save your Sheet URL to push it.'; }
+}
+
+// ==========================================
 // SHEET URL
 // ==========================================
-function saveSheetUrl() {
+async function saveSheetUrl() {
   const url = document.getElementById('sheetUrlInput').value.trim();
-  const alert = document.getElementById('sheetAlert');
-  if (!url) {
-    alert.className = 'alert alert-error show';
-    alert.textContent = 'Please enter a URL.';
-    return;
-  }
-  if (!url.startsWith('https://script.google.com')) {
-    alert.className = 'alert alert-warn show';
-    alert.textContent = '⚠ This doesn\'t look like a Google Apps Script URL. Make sure it starts with https://script.google.com/macros/s/';
-    return;
-  }
+  const alertEl = document.getElementById('sheetAlert');
+  if (!url) { alertEl.className = 'alert alert-error show'; alertEl.textContent = 'Please enter a URL.'; return; }
+  if (!url.startsWith('https://script.google.com')) { alertEl.className = 'alert alert-warn show'; alertEl.textContent = '⚠ Doesn\'t look like a Google Apps Script URL.'; return; }
   localStorage.setItem(SHEET_KEY, url);
-  alert.className = 'alert alert-success show';
-  alert.textContent = '✓ Google Sheet URL saved. Examiners can now submit grades.';
+  alertEl.className = 'alert alert-success show';
+  alertEl.textContent = '✓ Saved locally. Syncing to GitHub…';
   updateDashboard();
+  await pushConfigToGitHub(url, alertEl);
 }
 
 function clearSheetUrl() {
@@ -867,7 +930,7 @@ function clearSheetUrl() {
 }
 
 function openSheet() {
-  const url = localStorage.getItem(SHEET_KEY);
+  const url = getSheetUrl();
   if (url) window.open(url, '_blank');
   else alert('No sheet URL configured yet.');
 }

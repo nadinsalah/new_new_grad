@@ -571,7 +571,10 @@
 
 <header>
   <div class="logo">Exam<span>Portal</span></div>
-  <div class="badge">Examiner Access</div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="admin_panel.html" style="font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:5px 12px;border-radius:20px;transition:all 0.2s;" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">Admin</a>
+    <div class="badge">Examiner Access</div>
+  </div>
 </header>
 
 <main>
@@ -816,7 +819,13 @@
             </div>
           </div>
 
-          <div class="timestamp-row">
+          <!-- GROUP TOTAL -->
+          <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:10px;padding:16px 20px;margin-top:8px;">
+            <span style="font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);">Group Average</span>
+            <span style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:var(--accent2);" id="total_group">—<span style="font-size:0.8rem;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400;margin-left:4px;">/ 30</span></span>
+          </div>
+
+          <div class="timestamp-row" style="margin-top:16px;">
             <span class="ts-label">Submission Timestamp</span>
             <span class="ts-value" id="tsDisplay">Will be set on submit</span>
           </div>
@@ -857,15 +866,15 @@ STUDENT_DATA["41"] = STUDENT_DATA["GROUP 41"] || STUDENT_DATA["41"];
 let currentGroup = null;
 let hasS2 = false;
 
-const HARDCODED_SHEET_URL = 'https://script.google.com/macros/s/AKfycbw6xnAyHr1UXfUB6JJkqL2dlNnK8S-Uel9CgiZVB_ZonFkeiRjp9b0K9vF_Zrg8P2eCNg/exec';
+// Load sheet URL from localStorage (set by admin)
 function getSheetUrl() {
-  return localStorage.getItem('examportal_sheet_url') || HARDCODED_SHEET_URL;
+  return localStorage.getItem('examportal_sheet_url') || '';
 }
 
 function lookupGroup() {
   const raw = document.getElementById('groupInput').value.trim();
-  const lookupAlertEl = document.getElementById('lookupAlert');
-  lookupAlertEl.classList.remove('show');
+  const alert = document.getElementById('lookupAlert');
+  alert.classList.remove('show');
 
   if (!raw) return;
 
@@ -882,7 +891,7 @@ function lookupGroup() {
   }
 
   if (!key) {
-    lookupAlertEl.classList.add('show');
+    alert.classList.add('show');
     return;
   }
 
@@ -966,6 +975,7 @@ function clearGrades() {
   });
   document.getElementById('total_s1').innerHTML = '—<span>/ 30</span>';
   document.getElementById('total_s2').innerHTML = '—<span>/ 30</span>';
+  document.getElementById('total_group').innerHTML = '—<span style="font-size:0.8rem;color:var(--muted);font-family:\'DM Sans\',sans-serif;font-weight:400;margin-left:4px;">/ 30</span>';
   document.getElementById('tsDisplay').textContent = 'Will be set on submit';
 }
 
@@ -1002,21 +1012,29 @@ function calcTotals() {
     ts1El.innerHTML = '—<span>/ 30</span>';
   }
 
+  const gtEl = document.getElementById('total_group');
   if (hasS2) {
     if (e1s2 !== null && e2s2 !== null && e3s2 !== null) {
       ts2El.innerHTML = (e1s2 + e2s2 + e3s2).toFixed(1) + '<span>/ 30</span>';
     } else {
       ts2El.innerHTML = '—<span>/ 30</span>';
     }
+    const s1done = e1s1!==null&&e2s1!==null&&e3s1!==null;
+    const s2done = e1s2!==null&&e2s2!==null&&e3s2!==null;
+    if (s1done && s2done) {
+      const gt = ((e1s1+e2s1+e3s1) + (e1s2+e2s2+e3s2)) / 2;
+      gtEl.innerHTML = gt.toFixed(1) + '<span style="font-size:0.8rem;color:var(--muted);font-family:\'DM Sans\',sans-serif;font-weight:400;margin-left:4px;">/ 30</span>';
+    } else { gtEl.innerHTML = '—<span style="font-size:0.8rem;color:var(--muted);font-family:\'DM Sans\',sans-serif;font-weight:400;margin-left:4px;">/ 30</span>'; }
+  } else {
+    if (e1s1!==null&&e2s1!==null&&e3s1!==null) {
+      gtEl.innerHTML = (e1s1+e2s1+e3s1).toFixed(1) + '<span style="font-size:0.8rem;color:var(--muted);font-family:\'DM Sans\',sans-serif;font-weight:400;margin-left:4px;">/ 30</span>';
+    } else { gtEl.innerHTML = '—<span style="font-size:0.8rem;color:var(--muted);font-family:\'DM Sans\',sans-serif;font-weight:400;margin-left:4px;">/ 30</span>'; }
   }
 }
 
 
-  const v = document.getElementById(id).value;
-  return v === '' ? '' : parseFloat(v);
-}
-
 async function submitGrades() {
+  function g(id) { const v = document.getElementById(id).value; return v === '' ? '' : parseFloat(v); }
   const sheetUrl = getSheetUrl();
   const alertEl = document.getElementById('submitAlert');
 
@@ -1055,8 +1073,15 @@ async function submitGrades() {
     e2s2Presentation: g('e2s2p'),
     e3s2Report: g('e3s2r'),
     e3s2Presentation: g('e3s2p'),
-    s1Total: document.getElementById('total_s1').textContent.replace('/ 30','').trim(),
-    s2Total: hasS2 ? document.getElementById('total_s2').textContent.replace('/ 30','').trim() : '',
+    s1Total: (parseFloat(document.getElementById('total_s1').textContent) || 0).toFixed(1),
+    s2Total: hasS2 ? (parseFloat(document.getElementById('total_s2').textContent) || 0).toFixed(1) : '',
+    groupAvg: (() => {
+      const s1 = parseFloat(document.getElementById('total_s1').textContent);
+      const s2 = hasS2 ? parseFloat(document.getElementById('total_s2').textContent) : null;
+      if (isNaN(s1)) return '';
+      if (!hasS2 || isNaN(s2)) return s1.toFixed(1);
+      return ((s1 + s2) / 2).toFixed(1);
+    })(),
   };
 
   const btn = document.getElementById('submitBtn');
@@ -1065,11 +1090,13 @@ async function submitGrades() {
   alertEl.className = 'alert';
 
   try {
+    const formData = new URLSearchParams();
+    Object.entries(payload).forEach(([k,v]) => formData.append(k, v));
     const res = await fetch(sheetUrl, {
       method: 'POST',
       mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formData.toString()
     });
 
     // no-cors means we can't read response — assume success

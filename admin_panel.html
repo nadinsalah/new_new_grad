@@ -411,7 +411,7 @@
 
     <button class="btn btn-primary" onclick="doLogin()">Sign In</button>
     <div class="login-error" id="loginError">Incorrect password. Try again.</div>
-    <p style="margin-top:20px;font-size:0.75rem;color:var(--muted);">Default password: <code style="color:var(--accent)">admin1234</code><br>Change it immediately after first login.</p>
+    <p style="margin-top:20px;font-size:0.75rem;color:var(--muted);">Contact your administrator if you need access.</p>
   </div>
 </div>
 
@@ -761,8 +761,8 @@ const FIXED_PASSWORD = 'CHANGE_ME_PASSWORD';
 const FIXED_GOOGLE_SCRIPT_URL = 'CHANGE_ME_GOOGLE_SCRIPT_URL';
 const PASS_KEY = 'examportal_admin_pass';
 const SHEET_KEY = 'examportal_sheet_url';
-const DEFAULT_PASS = 'Msa123';        // ← replace this
-const HARDCODED_SHEET_URL = 'https://script.google.com/macros/s/AKfycbw6xnAyHr1UXfUB6JJkqL2dlNnK8S-Uel9CgiZVB_ZonFkeiRjp9b0K9vF_Zrg8P2eCNg/exec';  // ← replace this
+const DEFAULT_PASS = 'YOUR_PASSWORD_HERE';        // ← replace this
+const HARDCODED_SHEET_URL = 'YOUR_APPS_SCRIPT_URL_HERE';  // ← replace this
 
 // ==========================================
 // AUTH
@@ -942,27 +942,27 @@ function changePassword() {
   const current = document.getElementById('currentPass').value;
   const newp = document.getElementById('newPass').value;
   const confirm = document.getElementById('confirmPass').value;
-  const alert = document.getElementById('passAlert');
+  const alertEl = document.getElementById('passAlert');
 
   if (current !== getPassword()) {
-    alert.className = 'alert alert-error show';
-    alert.textContent = 'Current password is incorrect.';
+    alertEl.className = 'alert alert-error show';
+    alertEl.textContent = 'Current password is incorrect.';
     return;
   }
   if (newp.length < 6) {
-    alert.className = 'alert alert-error show';
-    alert.textContent = 'New password must be at least 6 characters.';
+    alertEl.className = 'alert alert-error show';
+    alertEl.textContent = 'New password must be at least 6 characters.';
     return;
   }
   if (newp !== confirm) {
-    alert.className = 'alert alert-error show';
-    alert.textContent = 'Passwords do not match.';
+    alertEl.className = 'alert alert-error show';
+    alertEl.textContent = 'Passwords do not match.';
     return;
   }
 
   localStorage.setItem(PASS_KEY, newp);
-  alert.className = 'alert alert-success show';
-  alert.textContent = '✓ Password updated successfully.';
+  alertEl.className = 'alert alert-success show';
+  alertEl.textContent = '✓ Password updated successfully.';
   document.getElementById('currentPass').value = '';
   document.getElementById('newPass').value = '';
   document.getElementById('confirmPass').value = '';
@@ -982,16 +982,16 @@ function clearAllSettings() {
 function handleFileUpload(input) {
   const file = input.files[0];
   if (!file) return;
-  const alert = document.getElementById('uploadAlert');
-  alert.className = 'alert alert-warn show';
-  alert.textContent = '⚠ File selected: ' + file.name + '. Note: to fully update student data in the examiner form, you need to re-generate the HTML files with the new Excel. Contact your developer or use the Python script provided separately.';
+  const alertEl = document.getElementById('uploadAlert');
+  alertEl.className = 'alert alert-warn show';
+  alertEl.textContent = '⚠ File selected: ' + file.name + '. Note: to fully update student data in the examiner form, you need to re-generate the HTML files with the new Excel. Contact your developer or use the Python script provided separately.';
 }
 
 function resetToOriginal() {
   if (!confirm('Reset student data to original? This cannot be undone.')) return;
-  const alert = document.getElementById('uploadAlert');
-  alert.className = 'alert alert-success show';
-  alert.textContent = '✓ Data is already using the original embedded dataset.';
+  const alertEl = document.getElementById('uploadAlert');
+  alertEl.className = 'alert alert-success show';
+  alertEl.textContent = '✓ Data is already using the original embedded dataset.';
 }
 
 // ==========================================
